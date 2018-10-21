@@ -25,9 +25,9 @@ export class FormAddComponent implements OnInit {
         this.profileForm = this.fb.group({
             name : ['', [Validators.required, Validators.minLength(settings.name.min), forbiddenNameValidator()], forbiddenCurrectNameValidator(this.userService)],
             age : ['', [Validators.required, forbiddenAgeValidator(settings.age.from, settings.age.till)]],
-            birthday : ['', [forbiddenDateValidator('YYYY/MM/DD')]],
-            dateOfLogin : ['', [forbiddenDateValidator('DD MMMM YYYY')]],
-            dateOfNotification : ['', [forbiddenDateValidator('DD-MMM-YY')]]
+            birthday : ['', [forbiddenDateValidator(settings.birthday.format)]],
+            dateOfLogin : ['', [forbiddenDateValidator(settings.dateOfLogin.format)]],
+            dateOfNotification : ['', [forbiddenDateValidator(settings.dateOfNotification.format)]]
         });
         this.user = {
             name: '',
@@ -54,10 +54,8 @@ export class FormAddComponent implements OnInit {
     }
 
     checkValid(input : string) {
-        return !this.profileForm.controls[input].invalid && 
-        (this.profileForm.controls[input].dirty ||
-            this.profileForm.controls[input].touched) && 
-            this.profileForm.controls[input].value !== ''
+        return !this.checkInvalid(input) && 
+            this.profileForm.controls[input].value !== '';
     }
 
     onSubmit() {
