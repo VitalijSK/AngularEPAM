@@ -1,0 +1,1 @@
+export const pathToUsers = __dirname+'/../../../data/users.json';

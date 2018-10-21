@@ -1,24 +1,22 @@
 {
-    "compilerOptions": { 
-      "target": "es2017",  
-      "module": "commonjs",  
-      "lib": [ 
-        "dom",  
-        "es2017"  
-      ],  
-      "sourceMap": true, 
-      "outDir": "./build", 
-      "removeComments": true,  
-      "strict": true,  
-      "noImplicitAny": true,  
-      "strictNullChecks": true,  
-      "noImplicitThis": true, 
-      "noUnusedLocals": true,  
-      "noImplicitReturns": true,  
-      "moduleResolution": "node"
-    },
-    "exclude": [
-      "node_modules",
-      "build"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./build",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2017",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
     ]
+  }
 }
+
