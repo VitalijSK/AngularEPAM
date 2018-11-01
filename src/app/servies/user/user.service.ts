@@ -1,37 +1,52 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import IUser from '../../interfaces/user';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-
   constructor(private http: HttpClient) { }
-
-  getUsers() : Observable<Array<IUser>> {
+  getUsers(): Observable<Array<IUser>> {
     return this.http.get<Array<IUser>>('https://localhost:3000/api/users');
   }
-  getCurrectName (name: string) : Observable<Boolean> {
-    const httpOptions = {
+  getPassword(name: string): Observable<string> {
+    const data = { checkName: name };
+    return this.http.post<string>('https://localhost:3000/api/users/getPassword', data);
+  }
+  getCurrectName(name: string): Observable<Boolean> {
+    const data = { checkName: name };
+    return this.http.post<Boolean>('https://localhost:3000/api/users/checkName', data);
+  }
+  Auth(name: string, password: string): Observable<{ token: string }> {
+    const data = { name, password };
+    return this.http.post<{ token: string }>('https://localhost:3000/api/users/checkUser', data);
+  }
+  CheckUserAuth(): Observable<boolean> {
+    const src: string = 'https://localhost:3000/api/users/checkAuthUser';
+    return this.checkAuth<boolean>(src);
+  }
+  checkAuth<T>(src: string): Observable<T> {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const header = {
         headers: new HttpHeaders({
-          'Content-Type':  'application/json'
+          'x-access-token': token
         })
       };
-      const data  = { checkName: name };
-      const dat = { name: 'name',
-      password: '1234', 
-     dateOfBirth: '', 
-     information: '' };
-     this.http.post('https://localhost:3000/api/users', dat, httpOptions).subscribe(
-         data => {
-             console.log(data);
-         }
-         );
-    return this.http.post<Boolean>('https://localhost:3000/api/users/checkName', data, httpOptions);
+      return this.http.get<T>(src, header);
+    } else {
+      return throwError('User is not found');
+    }
+  }
+  updateUser(user: IUser) {
+    const data = user;
+    return this.http.put(`https://localhost:3000/api/users/${user.id}`, data);
+  }
+  getMyProfile(): Observable<IUser> {
+    const src: string = 'https://localhost:3000/api/profile';
+    return this.checkAuth<IUser>(src);
   }
 }
 

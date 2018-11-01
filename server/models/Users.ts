@@ -10,8 +10,15 @@ class UsersModel {
     getUsers() {
         return this.users.map(user => user);
     }
-    getUserById(id: number) {
+    getUserById(id: string) {
         const user = this.users.find(findById(id));
+        if (user) {
+            return user;
+        }
+        return false;
+    }
+    getUserByName(name: string) {
+        const user = this.users.find(findByName(name));
         if (user) {
             return user;
         }
@@ -31,6 +38,16 @@ class UsersModel {
         const currectUser = this.users.findIndex(findByName(name));
         return currectUser >= 0;
     }
+    checkUser(name: string, password: string) {
+        const currectUser = this.users.find(findByName(name));
+        if (!currectUser) {
+            return false;
+        }
+        if (currectUser.password === password) {
+            return currectUser;
+        }
+        return false;
+    }
     addUser(user: IUser) {
         if (user) {
             user.id = this.getId();
@@ -39,14 +56,14 @@ class UsersModel {
         }
         return false;
     }
-    deleteUserById(id: number) {
+    deleteUserById(id: string) {
         if (this.isExistId(id)) {
             this.users = this.users.filter(filterById(id));
             return true;
         }
         return false;
     }
-    isExistId(id: number) {
+    isExistId(id: string) {
         const userIndex = this.users.findIndex(findById(id));
         return userIndex >= 0;
     }
@@ -54,10 +71,10 @@ class UsersModel {
         return uuidv4();
     }
 }
-const findById = (id : number) => {
+const findById = (id : string) => {
     return user => user.id === id   
 };
-const filterById = (id : number) => {
+const filterById = (id : string) => {
     return user => user.id !== id   
 };
 const findByName = (name) => {
